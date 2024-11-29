@@ -1,0 +1,51 @@
+name: 🤖 CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+env:
+  KOTLIN_MAIN_KTS_COMPILED_SCRIPTS_CACHE_DIR: ${{ github.workspace }}/.main.kts
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@cc4fc85e6b35bafd578d5ffbc76a5518407e1af0 # v4.2.1
+
+      - name: 💾 Cache Kotlin scripts
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.KOTLIN_MAIN_KTS_COMPILED_SCRIPTS_CACHE_DIR }}
+          key: kts-${{ runner.os }}-${{ hashFiles('**/*.main.kts') }}
+      - run: mkdir -p "$KOTLIN_MAIN_KTS_COMPILED_SCRIPTS_CACHE_DIR"
+
+      - name: 🔣 Fetching inputs…
+        run: ./inputs.main.kts
+        env:
+          SESSION_ID: ${{ secrets.SESSION_ID }}
+
+      - run: ./gradlew build
+
+      - name: 📦 Archive JUnit HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-html
+          path: build/reports/tests/test
+
+      - name: 📦 Archive JUnit XML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-xml
+          path: build/test-results/test/**.xml
