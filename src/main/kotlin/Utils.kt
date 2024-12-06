@@ -1,4 +1,3 @@
-
 fun <T> Sequence<T>.infinite() = sequence { while (true) yieldAll(this@infinite) }
 
 inline fun <T, R> Sequence<T>.foldInPlace(
@@ -16,3 +15,5 @@ fun <E> List<E>.splitParts(
 ): List<List<E>> = asSequence().foldInPlace<E, MutableList<MutableList<E>>>(mutableListOf(mutableListOf())) {
     if (it == delimiter) add(mutableListOf()) else last().add(it)
 }
+
+inline fun <reified T : Enum<T>> T.next(): T = enumValues<T>().run { this[(ordinal + 1) % size] }
