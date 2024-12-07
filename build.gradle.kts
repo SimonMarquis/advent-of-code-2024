@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+  implementation("com.github.shiguruikai:combinatoricskt:1.6.0")
   testImplementation(kotlin("test"))
 }
 
