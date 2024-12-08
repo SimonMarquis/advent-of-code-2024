@@ -17,3 +17,6 @@ fun <E> List<E>.splitParts(
 }
 
 inline fun <reified T : Enum<T>> T.next(): T = enumValues<T>().run { this[(ordinal + 1) % size] }
+
+fun <E> List<E>.toPair(): Pair<E, E> = component1() to component2()
+
