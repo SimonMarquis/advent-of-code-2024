@@ -10,6 +10,11 @@ inline fun <T, R> Sequence<T>.foldIndexedInPlace(
     operation: R.(index: Int, T) -> Unit,
 ): R = foldIndexed(initial) { index: Int, acc: R, t: T -> acc.apply { operation(index, t) } }
 
+inline fun <T, R> List<T>.foldRightInPlace(
+    initial: R,
+    operation: R.(T) -> Unit,
+): R = foldRight(initial) { t: T, acc: R -> acc.apply { operation(t) } }
+
 fun <E> List<E>.splitParts(
     delimiter: E,
 ): List<List<E>> = asSequence().foldInPlace<E, MutableList<MutableList<E>>>(mutableListOf(mutableListOf())) {
